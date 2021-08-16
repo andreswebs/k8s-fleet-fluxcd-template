@@ -10,5 +10,5 @@
       create: true
       name: cert-manager
       automountServiceAccountToken: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::876921148735:role/cert-manager-rmss-dev
+      # annotations:
+      #   eks.amazonaws.com/role-arn: arn:aws:iam::12345678900:role/cert-manager
