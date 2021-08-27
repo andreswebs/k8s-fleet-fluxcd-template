@@ -1,6 +1,6 @@
 # k8s-fleet
 
-This repository contains Kubernetes configuration files for multiple k8s clusters.
+This repository is a template containing intial Kubernetes configuration files for a multi-cluster k8s fleet.
 
 It uses the following top directory structure:
 
@@ -16,13 +16,15 @@ The `configs/base` dir contains common configurations for all clusters. Overlays
 
 ## Example cluster: kind-local
 
+Create a new repository using this template.
+
 To test the configurations in this repo using [Kind](https://kind.sigs.k8s.io/) (Kubernetes-in-Docker), assuming the `kind` cli is [install](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)ed, do:
 
 ```sh
 kind create cluster
 ```
 
-And follow the instructions for [FluxCD](https://fluxcd.io) [installation](https://fluxcd.io/docs/installation/) and [bootstrap](https://fluxcd.io/docs/get-started/#install-flux-onto-your-cluster), using this repository as the target.
+And follow the instructions for [FluxCD](https://fluxcd.io) [installation](https://fluxcd.io/docs/installation/) and [bootstrap](https://fluxcd.io/docs/get-started/#install-flux-onto-your-cluster), using your k8s-fleet repository as the target.
 
 ## Authors
 
