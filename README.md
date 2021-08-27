@@ -1,16 +1,33 @@
 # k8s-fleet
 
-This repository contains Kubernetes configuration files for k8s clusters.
+This repository contains Kubernetes configuration files for multiple k8s clusters.
 
 It uses the following top directory structure:
 
-- `clusters` dir contains the Flux configuration per cluster
+- `clusters` dir contains the Flux configuration per cluster under `clusters/<cluster>`
 - `sources` dir contains source definitions common to all clusters
-- `apps` dir contains kustomizations or Helm releases with a custom configuration per cluster
+- `configs` dir contains kustomizations or Helm releases with a custom configuration per cluster
 
 Each cluster in the `clusters` dir has a `flux-system` directory with automatically-generated configuration (`clusters/<cluster>/flux-system`).
 
-The `apps` dir is structured as a kustomization directory with a base (`apps/base`) and various overlays, one per cluster (`app/<cluster>`).
+The `configs` dir is structured as a kustomization directory with a base directory named `configs/base` and an overlays directory named `configs/overlays`, which contains one overlay per cluster, each named `configs/overlays/<cluster>`.
 
-The `apps/base` dir contains common configurations for all clusters. Overlays dirs contain patches per cluster.
+The `configs/base` dir contains common configurations for all clusters. Overlays dirs contain patches per cluster.
 
+## Example cluster: kind-local
+
+To test the configurations in this repo using [Kind](https://kind.sigs.k8s.io/) (Kubernetes-in-Docker), assuming the `kind` cli is [install](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)ed, do:
+
+```sh
+kind create cluster
+```
+
+And follow the instructions for [FluxCD](https://fluxcd.io) [installation](https://fluxcd.io/docs/installation/) and [bootstrap](https://fluxcd.io/docs/get-started/#install-flux-onto-your-cluster), using this repository as the target.
+
+## Authors
+
+**Andre Silva** - [@andreswebs](https://github.com/andreswebs)
+
+## License
+
+This project is licensed under the [Unlicense](UNLICENSE.md).
