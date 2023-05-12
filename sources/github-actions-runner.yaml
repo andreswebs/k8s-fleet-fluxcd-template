@@ -1,0 +1,10 @@
+# See: https://actions-runner-controller.github.io/actions-runner-controller
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: github-actions-runner
+spec:
+  interval: 30m
+  url: https://actions-runner-controller.github.io/actions-runner-controller
+  

@@ -7,5 +7,7 @@
 # Include manifest directories
 !/clusters/
 !/sources/
+!/infrastructure-base/
+!/secrets/
 !/infrastructure/
 !/apps/

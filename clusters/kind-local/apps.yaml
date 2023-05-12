@@ -13,3 +13,4 @@ spec:
     name: flux-system
   dependsOn:
     - name: infra
+    - name: secrets
