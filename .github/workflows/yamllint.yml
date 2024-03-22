@@ -1,0 +1,30 @@
+---
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install yamllint if needed
+        shell: bash
+        run: |
+          if ! command -v yamllint &> /dev/null; then
+            sudo pip3 install yamllint 2>&1 > /dev/null
+          fi
+
+      - name: YAML Lint
+        run: yamllint .

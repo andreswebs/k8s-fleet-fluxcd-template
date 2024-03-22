@@ -4,10 +4,10 @@ kind: Kustomization
 
 resources:
   - ../../base/metrics-server
-  - ../../base/monitoring
-  - ../../base/cert-manager
-  - ../../base/external-secrets
-  - ../../base/github-actions-runner
+  - ../../base/o11y
+  # - ../../base/cert-manager
+  # - ../../base/external-secrets
+#####
 
 # patchesJson6902:
 
@@ -26,11 +26,3 @@ resources:
 #       kind: HelmRelease
 #       namespace: external-secrets
 #       name: external-secrets
-
-#   - path: ./patches/metrics-server.yaml
-#     target:
-#       group: helm.toolkit.fluxcd.io
-#       version: v2beta1
-#       kind: HelmRelease
-#       namespace: kube-system
-#       name: metrics-server
