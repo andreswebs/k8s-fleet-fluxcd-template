@@ -1,11 +1,44 @@
 # k8s-fleet
 
-This repository is a template containing intial Kubernetes configuration files
-for a multi-cluster k8s fleet.
-
 ## Structure
 
-It uses the following top-level directory structure:
+This repository has the following directory structure:
+
+```
+.
+├── README.md
+├── .gitignore
+├── .sourceignore
+├── .editorconfig
+├── .yamllint
+├── applications
+│   ├── base
+│   └── overlays
+├── clusters
+│   ├── kind-local
+|   |   ├── flux-system
+|   |   ├── apps.yaml
+|   |   ├── infra-base.yaml
+|   |   ├── infra.yaml
+|   |   ├── secrets.yaml
+|   |   └── sources.yaml
+│   └── shared-deployer
+├── infrastructure
+│   ├── base
+│   └── overlays
+├── infrastructure-base
+│   ├── base
+│   └── overlays
+├── secrets
+│   ├── base
+│   └── overlays
+└── sources
+    ├── <source-n>.yaml
+    ├── (...)
+    └── kustomization.yaml
+```
+
+### Directories
 
 - `clusters/`: contains the Flux configuration per cluster under
   `clusters/<cluster>`
@@ -23,18 +56,45 @@ It uses the following top-level directory structure:
   per cluster, for any other apps
 
 Each cluster in the `clusters` directory has a `flux-system` directory with
-automatically-generated configuration (`clusters/<cluster>/flux-system`).
+automatically-generated configuration (`clusters/<cluster>/flux-system`)
+injected by FluxCD on bootstrap (described below).
 
-The `infrastructure-base`, `secrets`, `infrastructure` and `apps` directories
-are structured as kustomization directories with a base directory named
-`<dir>/base` and an overlays directory named `<dir>/overlays`, which contains
-one overlay per cluster, each named `<dir>/overlays/<cluster>`. The `<dir>/base`
-dirs contain common configurations for all clusters. Overlays dirs
-(`<dir>/overlays/<cluster>`) contain patches per cluster.
+### Order of kustomizations
 
-The `secrets/base` directoy contains two sub-directories: `secrets/base/stores`
-and `secrets/base/secrets`, which group these two types of resources managed by
-the External Secrets Operator, respectively: secret stores and secrets.
+The `infrastructure-base`, `secrets`, `infrastructure` and `applications`
+directories are structured as kustomization directories. These directories are
+deployed as FluxCD `Kustomization` resources.
+
+Each kustomization directory has a base directory named `<dir>/base` and an
+overlays directory named `<dir>/overlays`. Overlays directories contain one
+overlay per cluster, each named `<dir>/overlays/<cluster>`. The `<dir>/base`
+directories contain common configurations ("bases") used across clusters. The
+base directories contain "bases" distributed in subdirectories of the
+`<dir>/base`. Overlays directories (`<dir>/overlays/<cluster>`) contain patches
+per cluster over the defined bases.
+
+The `source` directory doesn't contain a base and overlays subdirectories, but
+it is also considered a kustomization. It currently doesn't have any
+cluster-specific configuration, and is applied without variance to all clusters.
+This could be further configured to accomodate cluster differences in sources if
+desired, by following the same structure.
+
+The set of Kustomization resources in this repository is applied in a defined
+order in which each kustomization depends on the previous one.
+
+The order is defined implicitly within the Flux configuration directory for each
+cluster (`clusters/<cluster>`). Each `Kustomization` used by a cluster is
+defined in a separate file in the cluster directory. Kustomizations declare the
+dependencies for that kustomization in their `spec.dependsOn` property.
+
+The configured order for this repository is the following (the list uses the
+deployed Kustomization resource names):
+
+1. sources
+2. infra-base
+3. secrets
+4. infra
+5. apps
 
 ## Example cluster: kind-local
 
