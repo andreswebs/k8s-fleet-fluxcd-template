@@ -7,4 +7,3 @@ metadata:
 spec:
   interval: 30m
   url: https://actions-runner-controller.github.io/actions-runner-controller
-  

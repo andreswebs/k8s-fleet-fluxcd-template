@@ -19,8 +19,8 @@ It uses the following top-level directory structure:
   per cluster, for Kubernetes add-ons and other base applications that are
   dependencies for other apps, and which depend on add-ons from
   `infrastructure-base/` and/or resources from `secrets/`
-- `apps/`: kustomizations or Helm releases with a custom configuration per
-  cluster, for any other apps
+- `applications/`: kustomizations or Helm releases with a custom configuration
+  per cluster, for any other apps
 
 Each cluster in the `clusters` directory has a `flux-system` directory with
 automatically-generated configuration (`clusters/<cluster>/flux-system`).
