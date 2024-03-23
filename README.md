@@ -115,6 +115,66 @@ using your k8s-fleet repository as the target.
 
 Ensure that the path for the cluster is specified as `clusters/kind-local`.
 
+## Example: Creating a k8s secret for FluxCD deploy key from GitHub
+
+First generate a deploy key. Assuming the keys to be saved under
+`./keys/kind-local`, run:
+
+```sh
+export KEY_DIR="$(pwd)/keys/kind-local"
+```
+
+```sh
+mkdir -p "${KEY_DIR}"
+ssh-keygen -t ed25519 -f "${KEY_DIR}/identity" -q -N "" -C "" < /dev/null
+```
+
+To get the contents of the public key:
+
+```sh
+cat "${KEY_DIR}/identity.pub"
+```
+
+Add the public key to the GitHub repository (see
+[instructions](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)).
+
+Generate a `known_hosts` file for the `github.com` domain:
+
+```
+curl -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/meta | jq -r '.ssh_keys[]' | while read key; do echo "github.com $key"; done > /tmp/github_known_hosts
+```
+
+Then create a Kubernetes secret with the contents below:
+
+```sh
+kubectl create namespace flux-system
+kubectl create secret generic \
+    flux-system \
+    --namespace flux-system \
+    --from-file="${KEY_DIR}/identity" \
+    --from-file="${KEY_DIR}/identity.pub" \
+    --from-literal=known_hosts="$(cat /tmp/github_known_hosts)"
+```
+
+Bootstrap flux:
+
+```sh
+export CLUSTER_NAME="mu"
+export GITHUB_OWNER="example-org"
+export GITHUB_REPO="k8s-fleet"
+export GITHUB_BRANCH="main"
+```
+
+```sh
+flux bootstrap git \
+  --url="ssh://git@github.com/${GITHUB_OWNER}/${GITHUB_REPO}" \
+  --branch="${GITHUB_BRANCH}" \
+  --private-key-file="${KEY_DIR}/identity" \
+  --path="clusters/${CLUSTER_NAME}"
+```
+
+(Note: add the `--password` flag if the private key has a password.)
+
 ## Authors
 
 **Andre Silva** - [@andreswebs](https://github.com/andreswebs)
