@@ -18,3 +18,10 @@ spec:
         kind: HelmRepository
         name: metrics-server
         namespace: flux-system
+
+  # https://github.com/kubernetes-sigs/metrics-server/blob/master/charts/metrics-server/values.yaml
+  values:
+    podDisruptionBudget:
+      # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+      enabled: false
+      minAvailable: 1
